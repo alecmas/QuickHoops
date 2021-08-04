@@ -1,0 +1,178 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" style="color:white;">QuickHoops</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarColor02">
+     <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" (click)="onOpenModal(null!, 'add')">Add Player <span class="sr-only">(current)</span></a>
+        </li>
+     </ul>
+     <form class="form-inline my-2 my-lg-0">
+       <input type="search" (ngModelChange)="searchPlayers(key.value)" #key="ngModel" ngModel
+         name="key" id="searchName" class="form-control mr-sm-2" placeholder="Search players..." required>
+     </form>
+  </div>
+</nav>
+<div class="container" id="main-container">
+    <div class="row">
+        <div *ngFor="let player of players" class="col-md-6 col-xl-3">
+            <div class="card m-b-30">
+                <div class="card-body row">
+                    <div class="col-lg text-center">
+                        <img src="{{player?.playerImageUrl}}" alt="" class="img-fluid">
+                    </div>
+                </div>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">
+                    <h3>{{player?.firstName}} {{player?.lastName}}</h3>
+                    <h5>{{player?.teamName}}</h5>
+                  </li>
+                  <li class="list-group-item">Rebounds per game: {{player?.pointsPerGame}}</li>
+                  <li class="list-group-item">Assists per game: {{player?.reboundsPerGame}}</li>
+                </ul>
+                <div class="card-body">
+                    <div class="float-right btn-group btn-group-sm">
+                     <a (click)="onOpenModal(player, 'update')" class="btn btn-primary tooltips" data-placement="top" data-toggle="tooltip" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
+                     <a (click)="onOpenModal(player, 'delete')" class="btn btn-danger tooltips" data-placement="top" data-toggle="tooltip" data-original-title="Delete"><i class="fa fa-trash"></i></a>
+                    </div>
+                    <ul class="social-links list-inline mb-0">
+                        <li class="list-inline-item"><a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="NBA"><img src="http://a4.espncdn.com/combiner/i?img=%2Fi%2Fespn%2Fmisc_logos%2F500%2Fnba.png" alt="" class="img-fluid"></a></li>
+                        <li class="list-inline-item"><a title="" data-placement="top" data-toggle="tooltip" class="tooltips" href="" data-original-title="NBA"><img src="https://i.imgur.com/RH3aeNA.png" alt="" class="img-fluid"></a></li>
+                     </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Player Modal -->
+<div class="modal fade" id="addPlayerModal" tabindex="-1" role="dialog" aria-labelledby="addPlayerModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+       <div class="modal-header">
+          <h5 class="modal-title" id="addPlayerModalLabel">Add Player</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+          </button>
+       </div>
+       <div class="modal-body">
+          <form #addForm="ngForm" (ngSubmit)="onAddPlayer(addForm)">
+          <div class="form-group">
+             <label for="firstName">First Name</label>
+             <input type="text" ngModel name="firstName" class="form-control" id="firstName" placeholder="First Name" required>
+          </div>
+          <div class="form-group">
+             <label for="lastName">Last Name</label>
+             <input type="text" ngModel name="lastName" class="form-control" id="lastName" placeholder="Last Name" required>
+          </div>
+          <div class="form-group">
+             <label for="pointsPerGame">Points Per Game</label>
+             <input type="number" min="0.01" step="0.01" ngModel name="pointsPerGame" class="form-control" id="pointsPerGame" placeholder="Points Per Game" required>
+          </div>
+          <div class="form-group">
+             <label for="reboundsPerGame">Rebounds Per Game</label>
+             <input type="number" min="0.01" step="0.01" ngModel name="reboundsPerGame" class="form-control" id="reboundsPerGame" placeholder="Rebounds Per Game" required>
+          </div>
+          <div class="form-group">
+            <label for="assistsPerGame">Assists Per Game</label>
+            <input type="number" min="0.01" step="0.01" ngModel name="assistsPerGame" class="form-control" id="assistsPerGame" placeholder="Assists Per Game" required>
+         </div>
+          <div class="form-group">
+             <label for="teamName">Team Name</label>
+             <input type="text" ngModel name="teamName" class="form-control" id="teamName" placeholder="Team Name" required>
+          </div>
+          <div class="form-group">
+            <label for="playerImageUrl">Player Image Url</label>
+            <input type="text" ngModel name="playerImageUrl" class="form-control" id="playerImageUrl" placeholder="Player Image Url" required>
+         </div>
+          <div class="modal-footer">
+             <button type="button" id="add-player-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+             <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary" >Save changes</button>
+          </div>
+          </form>
+       </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Update Modal -->
+<div class="modal fade" id="updatePlayerModal" tabindex="-1" role="dialog" aria-labelledby="updatePlayerModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content">
+        <div class="modal-header">
+           <h5 class="modal-title" id="updatePlayerModalLabel">Update Player {{updatePlayer?.firstName}}</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+           </button>
+        </div>
+        <div class="modal-body">
+           <form #updateForm="ngForm">
+              <input type="hidden" ngModel="{{updatePlayer?.id}}" name="id" class="form-control" id="id" placeholder="id">
+              <div class="form-group">
+                 <label for="firstName">First Name</label>
+                 <input type="text" ngModel="{{updatePlayer?.firstName}}" name="firstName" class="form-control" id="firstName" placeholder="First Name">
+              </div>
+              <div class="form-group">
+                 <label for="lastName">Last Name</label>
+                 <input type="text" ngModel="{{updatePlayer?.lastName}}" name="lastName" class="form-control" id="lastName" placeholder="Last Name">
+              </div>
+              <div class="form-group">
+                 <label for="pointsPerGame">Points Per Game</label>
+                 <input type="text" ngModel="{{updatePlayer?.pointsPerGame}}" name="pointsPerGame" class="form-control" id="pointsPerGame" placeholder="Points Per Game">
+              </div>
+              <div class="form-group">
+                 <label for="reboundsPerGame">Rebounds Per Game</label>
+                 <input type="number" ngModel="{{updatePlayer?.reboundsPerGame}}" min="0.01" step="0.01" name="reboundsPerGame" class="form-control" id="reboundsPerGame" placeholder="Rebounds Per Game">
+              </div>
+              <div class="form-group">
+                <label for="assistsPerGame">Assists Per Game</label>
+                <input type="number" ngModel="{{updatePlayer?.assistsPerGame}}" min="0.01" step="0.01" name="assistsPerGame" class="form-control" id="assistsPerGame" placeholder="Assists Per Game">
+             </div>
+             <div class="form-group">
+               <label for="teamName">Team Name</label>
+               <input type="text" ngModel="{{updatePlayer?.teamName}}" name="teamName" class="form-control" id="teamName" placeholder="Team Name">
+            </div>
+              <div class="form-group">
+                 <label for="playerImageUrl">Player Image URL</label>
+                 <input type="text" ngModel="{{updatePlayer?.playerImageUrl}}" name="playerImageUrl" class="form-control" id="playerImageUrl" placeholder="Player Image Url">
+              </div>
+              <div class="modal-footer">
+                 <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                 <button (click)="onUpdatePlayer(updateForm.value)" data-dismiss="modal" class="btn btn-primary" >Save changes</button>
+              </div>
+           </form>
+        </div>
+     </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deletePlayerModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+     <div class="modal-content">
+        <div class="modal-header">
+           <h5 class="modal-title" id="deleteModalLabel">Delete Player</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+           </button>
+        </div>
+        <div class="modal-body">
+           <p>Are you sure you want to delete player? {{deletePlayer?.firstName}}</p>
+           <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+              <button (click)="onDeletePlayer(deletePlayer.id)" class="btn btn-danger" data-dismiss="modal">Yes</button>
+           </div>
+        </div>
+     </div>
+  </div>
+</div>
+
+<!-- Notification for no players -->
+<div *ngIf="players?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
+  <div class="alert alert-info" role="alert">
+    <h4 class="alert-heading">NO PLAYERS!</h4>
+    <p>No players were found.</p>
+  </div>
+</div>
